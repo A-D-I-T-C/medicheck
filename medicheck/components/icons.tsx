@@ -1153,3 +1153,20 @@ export const LineChartIcon = ({ size = 16 }: { size?: number }) => (
     ></path>
   </svg>
 );
+
+export const VoiceIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: 'currentcolor' }}
+    >
+      <path
+        d="M8 10a2 2 0 0 0 2-2V3a2 2 0 0 0-4 0v5a2 2 0 0 0 2 2zm3-2a3 3 0 1 1-6 0H3a5 5 0 0 0 10 0h-2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

@@ -30,9 +30,14 @@ export default function Page() {
       toast.error('Failed validating your submission!');
     } else if (state.status === 'success') {
       setIsSuccessful(true);
-      router.refresh();
+      router.refresh()
+      // if (state.role === 'doctor') {
+      //   router.push('/doctor-dash'); // Redirect to doctor dashboard
+      // } else {
+      //   router.push('/patient-dash'); // Redirect to patient dashboard
+      // }
     }
-  }, [state.status, router]);
+  }, [state.status, router, state.role]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);

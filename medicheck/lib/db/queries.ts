@@ -28,19 +28,28 @@ const db = drizzle(client);
 
 export async function getUser(email: string): Promise<Array<User>> {
   try {
-    return await db.select().from(user).where(eq(user.email, email));
+    console.log("Fetching user from database with email:", email);
+
+    const result = await db
+      .select()
+      .from(user) // ✅ Ensure `user` table is correctly referenced
+      .where(eq(user.email, email));
+
+    console.log("Database query result:", result);
+
+    return result;
   } catch (error) {
-    console.error('Failed to get user from database');
-    throw error;
+    console.error("Failed to get user from database:", error);
+    throw new Error("Database query failed");
   }
 }
 
-export async function createUser(email: string, password: string) {
+export async function createUser(email: string, password: string, role: string) {
   const salt = genSaltSync(10);
   const hash = hashSync(password, salt);
 
   try {
-    return await db.insert(user).values({ email, password: hash });
+    return await db.insert(user).values({ email, password: hash, role: role as "patient" | "doctor" });
   } catch (error) {
     console.error('Failed to create user in database');
     throw error;
