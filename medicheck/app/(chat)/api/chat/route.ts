@@ -25,8 +25,40 @@ import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
+import { DataAPIClient } from "@datastax/astra-db-ts";
+import { getUser } from '@/lib/db/queries';
+
 
 export const maxDuration = 60;
+
+//TODO
+//Add check for if it's the client or doctor sending the message
+//Add fetch for client data using the id
+
+
+async function fetchClientDataFromPg() {
+  getUser("placeholder")
+  //need session to fetch the docs 
+}
+
+// Function to fetch data from Astra DB
+async function fetchDataFromAstraDB() {
+  try {
+    const client = new DataAPIClient(process.env.ASTRA_DB_APPLICATION_TOKEN);
+    if (!process.env.ASTRA_DB_API_ENDPOINT) {
+      throw new Error('ASTRA_DB_API_ENDPOINT is not defined');
+    }
+    const db = client.db(process.env.ASTRA_DB_API_ENDPOINT);
+    
+    const collection = db.collection('test2');
+    const result = await collection.find({}).toArray();
+    console.log('Data fetched from Astra DB:', result);
+    return result;
+  } catch (error) {
+    console.error('Error fetching data from Astra DB:', error);
+    throw error;
+  }
+}
 
 export async function POST(request: Request) {
   const {
@@ -40,6 +72,22 @@ export async function POST(request: Request) {
 
   if (!session || !session.user || !session.user.id) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  // Fetch data from Pg for the session
+  try {
+    const patientData = await fetchClientDataFromPg()
+  } catch (error) {
+    console.error('Failed to patient data from Postgres DB:', error);
+    return new Response('Failed to fetch data from Postgres DB', { status: 500 });
+  }
+
+  try {
+    const astraData = await fetchDataFromAstraDB();
+    console.log('Astra DB data:', astraData);
+  } catch (error) {
+    console.error('Failed to fetch data from Astra DB:', error);
+    return new Response('Failed to fetch data from Astra DB', { status: 500 });
   }
 
   const userMessage = getMostRecentUserMessage(messages);
