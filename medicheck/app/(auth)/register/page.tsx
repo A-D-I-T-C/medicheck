@@ -14,6 +14,7 @@ export default function Page() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('patient'); 
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
@@ -33,9 +34,9 @@ export default function Page() {
     } else if (state.status === 'success') {
       toast.success('Account created successfully');
       setIsSuccessful(true);
-      router.refresh();
+      router.push(role === 'doctor' ? '/doctor' : '/patient');
     }
-  }, [state, router]);
+  }, [state, router, role]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);
