@@ -9,10 +9,12 @@ import { signIn } from './auth';
 const authFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+  role: z.enum(['doctor', 'patient']), // Add role to schema
 });
 
 export interface LoginActionState {
   status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data';
+  role?: string; // Add role to state
 }
 
 export const login = async (
@@ -31,7 +33,19 @@ export const login = async (
       redirect: false,
     });
 
-    return { status: 'success' };
+    const [user] = await getUser(validatedData.email); // Get user from email
+    if (!user) {
+      return { status: 'failed' };
+    }
+
+    await signIn('credentials', {
+      email: validatedData.email,
+      password: validatedData.password,
+      redirect: false,
+    });
+
+    // Return
+    return { status: 'success', role: user.role };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { status: 'invalid_data' };
@@ -59,6 +73,7 @@ export const register = async (
     const validatedData = authFormSchema.parse({
       email: formData.get('email'),
       password: formData.get('password'),
+      role: formData.get('role'), // Add role to form data
     });
 
     const [user] = await getUser(validatedData.email);
@@ -66,7 +81,7 @@ export const register = async (
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
-    await createUser(validatedData.email, validatedData.password);
+    await createUser(validatedData.email, validatedData.password, validatedData.role);
     await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,
