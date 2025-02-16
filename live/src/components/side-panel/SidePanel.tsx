@@ -73,7 +73,7 @@ export default function SidePanel() {
   };
 
   return (
-    <div className={`side-panel ${open ? "open" : ""}`}>
+    <div className={`side-panel ${open ? "open" : ""}`} style={{ fontFamily: "Geist" }}>
       <header className="top">
         <h2>Console</h2>
         {open ? (

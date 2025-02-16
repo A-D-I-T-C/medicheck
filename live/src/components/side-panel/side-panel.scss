@@ -35,10 +35,9 @@
   flex-direction: column;
   height: 100vh;
   transition: all 0.2s ease-in;
-  font-family: Arial, sans-serif;
+  font-family: 'Geist', sans-serif;
   border-right: 1px solid var(--gray-600);
   color: var(--Neutral-90, #e1e2e3);
-  font-family: var(--font-family);
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
@@ -69,7 +68,7 @@
     h2 {
       position: relative;
       color: var(--Neutral-90, #e1e2e3);
-      font-family: "Google Sans";
+      font-family: 'Geist', sans-serif;
       font-size: 21px;
       font-style: normal;
       font-weight: 500;
@@ -139,7 +138,7 @@
       gap: 6px;
       flex-shrink: 0;
       text-align: center;
-      font-family: "Space Mono";
+      font-family: 'Geist Mono', monospace;
       font-size: 14px;
       font-style: normal;
       font-weight: 400;
