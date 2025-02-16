@@ -9,10 +9,12 @@ import { signIn } from './auth';
 const authFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+  // role: z.enum(['doctor', 'patient']), // Add role to schema
 });
 
 export interface LoginActionState {
   status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data';
+  role?: string; // Add role to state
 }
 
 export const login = async (
@@ -20,26 +22,57 @@ export const login = async (
   formData: FormData,
 ): Promise<LoginActionState> => {
   try {
-    const validatedData = authFormSchema.parse({
-      email: formData.get('email'),
-      password: formData.get('password'),
-    });
+    console.log("Login Attempt Started...");
 
-    await signIn('credentials', {
-      email: validatedData.email,
-      password: validatedData.password,
+    // ✅ Extract input data
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    console.log("Extracted Credentials:", { email, password });
+
+    // ✅ Validate input
+    const parsedData = authFormSchema.safeParse({ email, password });
+    if (!parsedData.success) {
+      console.error("Validation Error:", parsedData.error.errors);
+      return { status: "invalid_data" };
+    }
+
+    console.log("Validated Data:", parsedData.data);
+
+    // ✅ Fetch user from the database
+    const [user] = await getUser(parsedData.data.email);
+    if (!user) {
+      console.log("User not found in database!");
+      return { status: "failed" };
+    }
+
+    console.log("User found:", user.email, "Role:", user.role);
+
+    // ✅ Authenticate user
+    const signInResponse = await signIn("credentials", {
+      email: parsedData.data.email,
+      password: parsedData.data.password,
       redirect: false,
     });
 
-    return { status: 'success' };
+    console.log("SignIn Response:", signInResponse);
+
+    // ✅ Return success response with role
+    console.log("Login Successful! Redirecting user based on role...");
+    return { status: "success", role: user.role };
+
   } catch (error) {
+    console.error("Login Error:", error);
+
     if (error instanceof z.ZodError) {
-      return { status: 'invalid_data' };
+      console.error("Zod Validation Error:", error.errors);
+      return { status: "invalid_data" };
     }
 
-    return { status: 'failed' };
+    return { status: "failed" };
   }
 };
+
 
 export interface RegisterActionState {
   status:
@@ -59,6 +92,7 @@ export const register = async (
     const validatedData = authFormSchema.parse({
       email: formData.get('email'),
       password: formData.get('password'),
+      role: formData.get('role'), // Add role to form data
     });
 
     const [user] = await getUser(validatedData.email);
@@ -66,7 +100,7 @@ export const register = async (
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
-    await createUser(validatedData.email, validatedData.password);
+    await createUser(validatedData.email, validatedData.password, validatedData.role);
     await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,

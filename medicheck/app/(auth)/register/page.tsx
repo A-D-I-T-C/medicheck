@@ -14,6 +14,7 @@ export default function Page() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('patient'); // Default to patient
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
@@ -33,12 +34,13 @@ export default function Page() {
     } else if (state.status === 'success') {
       toast.success('Account created successfully');
       setIsSuccessful(true);
-      router.refresh();
+      router.push(role === 'doctor' ? '/doctor' : '/chat'); // ✅ Redirect after registration
     }
-  }, [state, router]);
+  }, [state, router, role]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);
+    formData.set('role', role); // ✅ Ensure role is sent to the backend
     formAction(formData);
   };
 
@@ -52,6 +54,15 @@ export default function Page() {
           </p>
         </div>
         <AuthForm action={handleSubmit} defaultEmail={email}>
+          {/* ✅ Role Selection */}
+          <select
+            className="p-2 border rounded-md mb-4"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+          </select>
           <SubmitButton isSuccessful={isSuccessful}>Sign Up</SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
             {'Already have an account? '}
