@@ -30,13 +30,12 @@ export default function Page() {
       toast.error('Failed validating your submission!');
     } else if (state.status === 'success') {
       setIsSuccessful(true);
-
-      // ✅ Redirect user based on role
-      if (state.role === 'doctor') {
-        router.push('/doctor');
-      } else {
-        router.push('/patient');
-      }
+      router.refresh()
+      // if (state.role === 'doctor') {
+      //   router.push('/doctor-dash'); // Redirect to doctor dashboard
+      // } else {
+      //   router.push('/patient-dash'); // Redirect to patient dashboard
+      // }
     }
   }, [state.status, router, state.role]);
 

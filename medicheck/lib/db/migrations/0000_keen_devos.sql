@@ -12,8 +12,6 @@ CREATE TABLE IF NOT EXISTS "User" (
 	"role" varchar(64) NOT NULL DEFAULT 'patient'
 );
 
---> if user table doesnt have role column then alter table and add it\
-ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "role" varchar(64) NOT NULL DEFAULT 'patient';
 
 --> statement-breakpoint
 DO $$ BEGIN
