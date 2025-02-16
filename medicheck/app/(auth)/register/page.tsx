@@ -34,8 +34,10 @@ export default function Page() {
     } else if (state.status === 'success') {
       toast.success('Account created successfully');
       setIsSuccessful(true);
+
       router.refresh();
       // router.push(role === 'doctor' ? '/doctor' : '/chat'); // ✅ Redirect after registration
+
     }
   }, [state, router, role]);
 
