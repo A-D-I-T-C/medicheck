@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "geist";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url(/fonts/geist.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: "geist-mono";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url(/fonts/geist-mono.woff2) format("woff2");
+}
+
+:root {
+    --background: 0 0% 100%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    
+    --radius: 0.5rem;
+}
+
+.dark {
+    --background: 240 10% 3.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-accent: 240 3.7% 15.9%;
+}
+
+@layer base {
+    body {
+        font-family: "geist", sans-serif;
+    }
+    
+    code, pre {
+        font-family: "geist-mono", monospace;
+    }
+}
+
+@layer components {
+    .button {
+        @apply rounded-md bg-primary text-primary-foreground hover:bg-primary/90;
+        font-family: "geist", sans-serif;
+    }
+
+    .input {
+        @apply bg-background border-border;
+        font-family: "geist", sans-serif;
+    }
+}
