@@ -84,12 +84,20 @@ export interface RegisterActionState {
     | 'invalid_data';
 }
 
+
+const authFormSchemaReg = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  role: z.enum(['doctor', 'patient']), // Add role to schema
+});
+
+
 export const register = async (
   _: RegisterActionState,
   formData: FormData,
 ): Promise<RegisterActionState> => {
   try {
-    const validatedData = authFormSchema.parse({
+    const validatedData = authFormSchemaReg.parse({
       email: formData.get('email'),
       password: formData.get('password'),
       role: formData.get('role'), // Add role to form data

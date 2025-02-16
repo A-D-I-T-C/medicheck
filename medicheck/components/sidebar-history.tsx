@@ -151,7 +151,8 @@ export const ChatItem = memo(PureChatItem, (prevProps, nextProps) => {
 
 export function SidebarHistory({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
-  const { id } = useParams();
+  const params = useParams();
+  const id = typeof params?.id === 'string' ? params?.id : null;
   const pathname = usePathname();
   const {
     data: history,
@@ -164,6 +165,10 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   useEffect(() => {
     mutate();
   }, [pathname, mutate]);
+
+  if (!id) {
+    console.warn("⚠️ No chat ID found in URL. Sidebar will display default view.");
+  }
 
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
