@@ -14,6 +14,7 @@ export default function Page() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
+  const [name, setName] = useState(''); // Add name state
   const [role, setRole] = useState('patient'); // Default to patient
   const [isSuccessful, setIsSuccessful] = useState(false);
 
@@ -34,12 +35,15 @@ export default function Page() {
     } else if (state.status === 'success') {
       toast.success('Account created successfully');
       setIsSuccessful(true);
-      router.push(role === 'doctor' ? '/doctor' : '/chat'); // ✅ Redirect after registration
+      // router.refresh();
+      router.push("doctor/home"); // Redirect to doctor dashboard
+      // router.push(role === 'doctor' ? '/doctor' : '/chat'); // ✅ Redirect after registration
     }
   }, [state, router, role]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);
+    setName(formData.get('name') as string); // Set name state
     formData.set('role', role); // ✅ Ensure role is sent to the backend
     formAction(formData);
   };
@@ -54,7 +58,17 @@ export default function Page() {
           </p>
         </div>
         <AuthForm action={handleSubmit} defaultEmail={email}>
-          {/* ✅ Role Selection */}
+          {/* Name Input Field */}
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-2 border rounded-md mb-4"
+            required
+          />
+          {/* Role Selection */}
           <select
             className="p-2 border rounded-md mb-4"
             value={role}

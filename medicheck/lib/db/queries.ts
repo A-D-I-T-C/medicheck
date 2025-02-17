@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt, gte, inArray } from 'drizzle-orm';
@@ -26,6 +26,37 @@ import { ArtifactKind } from '@/components/artifact';
 const client = postgres(process.env.POSTGRES_URL!);
 const db = drizzle(client);
 
+export async function getPatients() {
+  try {
+    return await db.select().from(user).where(eq(user.role, 'patient'));
+  } catch (error) {
+    console.error('Failed to get patients from database', error);
+    throw error;
+  }
+}
+
+//select*from user
+export async function getUsers() {
+  try {
+    return await db.select().from(user);
+    
+  } catch (error) {
+    console.error('Failed to get users from database', error);
+    throw error;
+  }
+}
+
+
+export async function getUserById(id: string): Promise<User[]> {
+  try {
+    return await db.select().from(user).where(eq(user.id, id));
+  } catch (error) {
+    console.error('Failed to get user from database:', error);
+    throw new Error('Database query failed');
+  }
+}
+
+
 export async function getUser(email: string): Promise<Array<User>> {
   try {
     console.log("Fetching user from database with email:", email);
@@ -44,12 +75,12 @@ export async function getUser(email: string): Promise<Array<User>> {
   }
 }
 
-export async function createUser(email: string, password: string, role: string) {
+export async function createUser(email: string, password: string, role: string, name: string) {
   const salt = genSaltSync(10);
   const hash = hashSync(password, salt);
 
   try {
-    return await db.insert(user).values({ email, password: hash, role: role as "patient" | "doctor" });
+    return await db.insert(user).values({ email, password: hash, role: role as "patient" | "doctor", name });
   } catch (error) {
     console.error('Failed to create user in database');
     throw error;
@@ -219,17 +250,17 @@ export async function getDocumentsById({ id }: { id: string }) {
   }
 }
 
-export async function getDocumentById({ id }: { id: string }) {
+export async function getDocumentsByUserId(userid: string){
   try {
-    const [selectedDocument] = await db
+    const selectedDocuments = await db
       .select()
       .from(document)
-      .where(eq(document.id, id))
+      .where(eq(document.userId, userid))
       .orderBy(desc(document.createdAt));
 
-    return selectedDocument;
+    return selectedDocuments;
   } catch (error) {
-    console.error('Failed to get document by id from database');
+    console.error('Failed to get documents by user id from database');
     throw error;
   }
 }
