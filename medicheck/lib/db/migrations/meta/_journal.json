@@ -43,6 +43,13 @@
       "when": 1739687841600,
       "tag": "0005_eager_joseph",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1739775879231,
+      "tag": "0006_hot_riptide",
+      "breakpoints": true
     }
   ]
 }

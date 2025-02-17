@@ -26,6 +26,15 @@ import { ArtifactKind } from '@/components/artifact';
 const client = postgres(process.env.POSTGRES_URL!);
 const db = drizzle(client);
 
+export async function getPatients() {
+  try {
+    return await db.select().from(user).where(eq(user.role, 'patient'));
+  } catch (error) {
+    console.error('Failed to get patients from database', error);
+    throw error;
+  }
+}
+
 export async function getUser(email: string): Promise<Array<User>> {
   try {
     console.log("Fetching user from database with email:", email);
@@ -44,12 +53,12 @@ export async function getUser(email: string): Promise<Array<User>> {
   }
 }
 
-export async function createUser(email: string, password: string, role: string) {
+export async function createUser(email: string, password: string, role: string, name: string) {
   const salt = genSaltSync(10);
   const hash = hashSync(password, salt);
 
   try {
-    return await db.insert(user).values({ email, password: hash, role: role as "patient" | "doctor" });
+    return await db.insert(user).values({ email, password: hash, role: role as "patient" | "doctor", name });
   } catch (error) {
     console.error('Failed to create user in database');
     throw error;

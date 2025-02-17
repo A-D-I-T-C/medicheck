@@ -33,7 +33,7 @@ export default function Page() {
       // router.refresh()
       console.log(state.role);
       console.log(state.status);
-      router.push('/doctor'); // Redirect to doctor dashboard
+      router.push('/doctor/home'); // Redirect to doctor dashboard
       // if (state.role === 'doctor') {
       //   router.push('/doctor/home'); // Redirect to doctor dashboard
       // } else {
