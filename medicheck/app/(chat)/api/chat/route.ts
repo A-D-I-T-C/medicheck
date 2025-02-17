@@ -77,7 +77,7 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
 
     const client = new DataAPIClient(process.env.ASTRA_DB_APPLICATION_TOKEN);
     const astraDb = client.db(process.env.ASTRA_DB_API_ENDPOINT);
-    const collection = await astraDb.collection('test2');
+    const collection = await astraDb.collection('RagMedDocs1');
 
     // Combine the prompt and user data into a single string
     const combinedInput = `${JSON.stringify(userData)}\n${prompt}`;
@@ -93,7 +93,7 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
     // Fetch the documents from Astra DB
     const result = await cursor.toArray();
 
-    console.log('Data fetched from Astra DB:', result);
+    //console.log('Data fetched from Astra DB:', result);
     return result;
   } catch (error) {
     console.error('Error fetching data from Astra DB:', error);
@@ -152,6 +152,7 @@ export async function POST(request: Request) {
     ${combinedContext}
   `;
 
+  console.log(combinedContext);
   const chat = await getChatById({ id });
 
   if (!chat) {
