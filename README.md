@@ -1,4 +1,4 @@
-# Medicheck🩺
+# Medicheck 🩺
 
 ## Inspiration
 We wanted to make healthcare interactions more seamless for both patients and clinicians. Even though patients and hospital staff each have their own workflows, they share a common need: quick access to session data and forms. The goal was to reduce redundant steps—like repeatedly filling in forms or searching for past documents—and instead create a system that is easy to navigate and helps everyone focus on care rather than admin tasks.
