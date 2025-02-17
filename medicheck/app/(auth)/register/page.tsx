@@ -33,11 +33,10 @@ export default function Page() {
     } else if (state.status === 'invalid_data') {
       toast.error('Failed validating your submission!');
     } else if (state.status === 'success') {
+      console.log('Redirecting with role:', role); // Debugging log
       toast.success('Account created successfully');
       setIsSuccessful(true);
-      // router.refresh();
-      router.push("doctor/home"); // Redirect to doctor dashboard
-      // router.push(role === 'doctor' ? '/doctor' : '/chat'); // ✅ Redirect after registration
+      router.push(role === 'doctor' ? '/doctor/home' : '/patient/home');
     }
   }, [state, router, role]);
 
