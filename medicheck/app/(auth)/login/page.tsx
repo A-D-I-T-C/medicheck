@@ -33,12 +33,12 @@ export default function Page() {
       // router.refresh()
       console.log(state.role);
       console.log(state.status);
-      router.push('/doctor/home'); // Redirect to doctor dashboard
-      // if (state.role === 'doctor') {
-      //   router.push('/doctor/home'); // Redirect to doctor dashboard
-      // } else {
-      //   // router.push('/patient-dash'); // Redirect to patient dashboard
-      // }
+      // router.push('/doctor/home'); // Redirect to doctor dashboard
+      if (state.role === 'doctor') {
+        router.push('/doctor/home'); // Redirect to doctor dashboard
+      } else {
+        router.push('/patient/home'); // Redirect to patient dashboard
+      }
     }
   }, [state.status, router, state.role]);
 
