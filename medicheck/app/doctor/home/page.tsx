@@ -17,8 +17,10 @@ export default function DoctorHomePage() {
     async function fetchPatients() {
       try {
         const patientsData = await handler();
-        setPatients(patientsData);
-        setFilteredPatients(patientsData);
+
+        const reversedPatients = patientsData.reverse();
+        setPatients(reversedPatients);
+        setFilteredPatients(reversedPatients);
       } catch (error) {
         console.error('Failed to fetch patients:', error);
       }
