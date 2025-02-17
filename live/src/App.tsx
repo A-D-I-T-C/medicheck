@@ -20,7 +20,8 @@ import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import SidePanel from "./components/side-panel/SidePanel";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import { ThemeProvider } from './providers/theme-provider';
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from './theme/theme';
 import { TriageAssistant } from "./components/triage/TriageAssistant";
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
@@ -39,7 +40,7 @@ function App() {
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
 
   return (
-    <ThemeProvider>
+    <ThemeProvider theme={theme}>
       <div className="App">
         <LiveAPIProvider url={uri} apiKey={API_KEY}>
           <div className="streaming-console">
