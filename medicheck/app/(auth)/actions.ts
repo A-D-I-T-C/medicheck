@@ -89,6 +89,8 @@ const authFormSchemaReg = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   role: z.enum(['doctor', 'patient']), // Add role to schema
+  name: z.string().min(1),
+
 });
 
 
@@ -101,6 +103,7 @@ export const register = async (
       email: formData.get('email'),
       password: formData.get('password'),
       role: formData.get('role'), // Add role to form data
+      name: formData.get('name'),
     });
 
     const [user] = await getUser(validatedData.email);
@@ -108,7 +111,7 @@ export const register = async (
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
-    await createUser(validatedData.email, validatedData.password, validatedData.role);
+    await createUser(validatedData.email, validatedData.password, validatedData.role, validatedData.name);
     await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,
