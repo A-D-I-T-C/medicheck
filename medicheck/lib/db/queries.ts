@@ -46,6 +46,17 @@ export async function getUsers() {
   }
 }
 
+
+export async function getUserById(id: string): Promise<User[]> {
+  try {
+    return await db.select().from(user).where(eq(user.id, id));
+  } catch (error) {
+    console.error('Failed to get user from database:', error);
+    throw new Error('Database query failed');
+  }
+}
+
+
 export async function getUser(email: string): Promise<Array<User>> {
   try {
     console.log("Fetching user from database with email:", email);

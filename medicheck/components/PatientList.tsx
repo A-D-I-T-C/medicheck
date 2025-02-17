@@ -1,17 +1,15 @@
-'use client';
-
 import Link from 'next/link';
 import { User } from '@/lib/db/schema';
 
-export default function PatientList({ patients }: { patients: User[] }) {
+interface PatientListProps {
+  patients: User[];
+}
+
+export default function PatientList({ patients }: PatientListProps) {
   return (
     <div className="space-y-4">
       {patients.map((patient) => (
-        <Link 
-          key={patient.id} 
-          href={`/doctor/session/${patient.id}`}
-          className="block group"
-        >
+        <Link key={patient.id} href={`/doctor/session/${patient.id}`} className="block group">
           <div className="relative overflow-hidden">
             <div className="relative bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/50 p-4
               transition-all duration-300 
@@ -23,7 +21,7 @@ export default function PatientList({ patients }: { patients: User[] }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-lg font-semibold text-gray-100 truncate">
-                      ID: {patient.id}
+                      Name: {patient.name ?? 'Unknown'}
                     </p>
                   </div>
                   

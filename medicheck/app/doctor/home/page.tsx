@@ -1,12 +1,42 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import DashboardCard from '@/components/DashboardCard';
 import DashboardHeader from '@/components/DashboardHeader';
 import PatientList from '@/components/PatientList';
 import SearchSection from '@/components/SearchSection';
-import { getPatients } from '@/lib/db/queries';
 import { User } from '@/lib/db/schema';
+import handler from '../actions';
 
-export default async function DoctorHomePage() {
-  const patients: User[] = await getPatients();
+export default function DoctorHomePage() {
+  const [patients, setPatients] = useState<User[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<User[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    async function fetchPatients() {
+      try {
+        const patientsData = await handler();
+        setPatients(patientsData);
+        setFilteredPatients(patientsData);
+      } catch (error) {
+        console.error('Failed to fetch patients:', error);
+      }
+    }
+
+    fetchPatients();
+  }, []);
+
+  useEffect(() => {
+    const filtered = patients.filter(patient =>
+      patient.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredPatients(filtered);
+  }, [searchQuery, patients]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -26,11 +56,11 @@ export default async function DoctorHomePage() {
         
         <div className="grid gap-8 md:grid-cols-2">
           {/* Search Section */}
-          <SearchSection />
+          <SearchSection onSearch={handleSearch} />
 
           {/* Recent Patients Section */}
           <DashboardCard title="Recent Patients" className="md:col-span-2">
-            <PatientList patients={patients} />
+            <PatientList patients={filteredPatients} />
           </DashboardCard>
         </div>
       </div>
