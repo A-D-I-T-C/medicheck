@@ -250,6 +250,7 @@ export async function getDocumentsById({ id }: { id: string }) {
   }
 }
 
+<<<<<<< HEAD
 export async function getDocumentsByUserId({ id }: { id: string }) {
   try {
     const documents = await db
@@ -266,16 +267,19 @@ export async function getDocumentsByUserId({ id }: { id: string }) {
 }
 
 export async function getDocumentById({ id }: { id: string }) {
+=======
+export async function getDocumentsByUserId(userid: string){
+>>>>>>> origin/main
   try {
-    const [selectedDocument] = await db
+    const selectedDocuments = await db
       .select()
       .from(document)
-      .where(eq(document.id, id))
+      .where(eq(document.userId, userid))
       .orderBy(desc(document.createdAt));
 
-    return selectedDocument;
+    return selectedDocuments;
   } catch (error) {
-    console.error('Failed to get document by id from database');
+    console.error('Failed to get documents by user id from database');
     throw error;
   }
 }

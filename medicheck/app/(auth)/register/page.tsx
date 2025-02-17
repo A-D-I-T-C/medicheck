@@ -15,6 +15,7 @@ export default function Page() {
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState(''); // Add name state
+  const [name, setName] = useState(''); // Add name state
   const [role, setRole] = useState('patient'); // Default to patient
   const [isSuccessful, setIsSuccessful] = useState(false);
 
@@ -43,6 +44,7 @@ export default function Page() {
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);
     setName(formData.get('name') as string); // Set name state
+    setName(formData.get('name') as string); // Set name state
     formData.set('role', role); // ✅ Ensure role is sent to the backend
     formAction(formData);
   };
@@ -57,6 +59,17 @@ export default function Page() {
           </p>
         </div>
         <AuthForm action={handleSubmit} defaultEmail={email}>
+          {/* Name Input Field */}
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-2 border rounded-md mb-4"
+            required
+          />
+          {/* Role Selection */}
           {/* Name Input Field */}
           <input
             type="text"

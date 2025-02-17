@@ -3,7 +3,7 @@
 
 Rename `.env.example` to `.env.local`
 
-Set Open AI And postgres API keys
+Populate API keys for `OpenAI`, `AstraDB` And `PostgresSQL`
 
 ```bash
 pnpm install
