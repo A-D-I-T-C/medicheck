@@ -45,7 +45,7 @@ async function fetchClientDataFromPg(sessionId: string) {
   return 0
 }
 
-async function getUserRole(session: any): Promise<'patient' | 'doctor'> {
+function getUserRole(session: any): string {
   if (session.user.role === 'doctor') {
     return 'doctor';
   } else {
@@ -165,10 +165,12 @@ export async function POST(request: Request) {
           ...messages,
           {
             role: 'system',
-            content: `You are an Medical AI assistant having questions about the patient. 
+            content: `You are an Medical AI assistant that will help gather questions about the patient to make lifes easier for doctors.
+              Be clear to indicate what you are supposed to do and also that you can be wrong about things
+              you are current talking to the ${getUserRole(session)} 
               ${combinedContext} 
               If the answer is not provided in the context, the AI assistant will say,
-               "I'm sorry, I don't know the answer".`
+              "I'm sorry, I don't know the answer".`
           },
         ],
         maxSteps: 5,
