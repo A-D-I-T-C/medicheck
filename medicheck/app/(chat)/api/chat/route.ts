@@ -24,9 +24,7 @@ import { generateTitleFromUserMessage } from '../../actions';
 import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
-import { getWeather } from '@/lib/ai/tools/get-weather';
 import { DataAPIClient } from "@datastax/astra-db-ts";
-import { getUser } from '@/lib/db/queries';
 
 export const maxDuration = 60;
 
@@ -63,6 +61,14 @@ async function fetchClientDataFromPg(sessionId: string) {
   // const userData = await getSession(sessionId);
   // return userData;
   return 0
+}
+
+async function getUserRole(session: any): Promise<'patient' | 'doctor'> {
+  if (session.user.role === 'doctor') {
+    return 'doctor';
+  } else {
+    return 'patient';
+  }
 }
 
 // Function to fetch data from Astra DB using RAG
@@ -121,16 +127,6 @@ export async function POST(request: Request) {
     return new Response('No user message found', { status: 400 });
   }
 
-  //TODO
-  const messageContent = userMessage.content.toLowerCase()
-  if (messageContent == "Medicheck Menu" || messageContent == "Menu" || messageContent == "Menu") {
-    return new Response(JSON.stringify({
-      message: "Here is the menu: [Option 1, Option 2, Option 3]"
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
   // Fetch client data from PostgreSQL using session ID
   let patientData;
   try {
@@ -182,7 +178,7 @@ export async function POST(request: Request) {
           ...messages,
           {
             role: 'system',
-            content: `You are an Medical AI assistant answering questions about the patient. 
+            content: `You are an Medical AI assistant having questions about the patient. 
               ${combinedContext} 
               If the answer is not provided in the context, the AI assistant will say,
                "I'm sorry, I don't know the answer".`
@@ -193,7 +189,6 @@ export async function POST(request: Request) {
           selectedChatModel === 'chat-model-reasoning'
             ? []
             : [
-                'getWeather',
                 'createDocument',
                 'updateDocument',
                 'requestSuggestions',
@@ -201,7 +196,6 @@ export async function POST(request: Request) {
         experimental_transform: smoothStream({ chunking: 'word' }),
         experimental_generateMessageId: generateUUID,
         tools: {
-          getWeather,
           createDocument: createDocument({ session, dataStream }),
           updateDocument: updateDocument({ session, dataStream }),
           requestSuggestions: requestSuggestions({
