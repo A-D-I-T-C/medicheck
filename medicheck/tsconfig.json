@@ -29,5 +29,10 @@
     ".next/types/**/*.ts",
     "next.config.js"
   ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "exclude": ["node_modules"]
 }
