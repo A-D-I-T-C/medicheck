@@ -250,7 +250,8 @@ export async function getDocumentsById({ id }: { id: string }) {
   }
 }
 
-export async function getDocumentsByUserId({ id }: { id: string }) {
+
+export async function getDocumentsByUserId(userid: string){
   try {
     const documents = await db
       .select()
@@ -266,6 +267,7 @@ export async function getDocumentsByUserId({ id }: { id: string }) {
 }
 
 export async function getDocumentById({ id }: { id: string }) {
+
   try {
     const selectedDocuments = await db
       .select()
