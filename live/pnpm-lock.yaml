@@ -44,12 +44,15 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-error-boundary:
+        specifier: ^5.0.0
+        version: 5.0.0(react@18.3.1)
       react-icons:
         specifier: ^5.3.0
         version: 5.4.0(react@18.3.1)
       react-leaflet:
-        specifier: ^5.0.0
-        version: 5.0.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^4.2.1
+        version: 4.2.1(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-scripts:
         specifier: 5.0.1
         version: 5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.9))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.9))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@18.3.1)(sass@1.85.0)(ts-node@10.9.2(@types/node@16.18.126)(typescript@5.7.3))(type-fest@0.21.3)(typescript@5.7.3)
@@ -93,6 +96,9 @@ importers:
       '@types/jest':
         specifier: ^27.5.2
         version: 27.5.2
+      '@types/leaflet':
+        specifier: ^1.9.16
+        version: 1.9.16
       '@types/lodash':
         specifier: ^4.17.13
         version: 4.17.15
@@ -1386,12 +1392,12 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@react-leaflet/core@3.0.0':
-    resolution: {integrity: sha512-3EWmekh4Nz+pGcr+xjf0KNyYfC3U2JjnkWsh0zcqaexYqmmB5ZhH37kz41JXGmKzpaMZCnPofBBm64i+YrEvGQ==}
+  '@react-leaflet/core@2.1.0':
+    resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
     peerDependencies:
       leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
 
   '@rollup/plugin-babel@5.3.1':
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
@@ -1630,6 +1636,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/leaflet@1.9.16':
+    resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
 
   '@types/lodash@4.17.15':
     resolution: {integrity: sha512-w/P33JFeySuhN6JLkysYUK2gEmy9kHHFN7E8ro0tkfmlDOgxBDzWEZ/J8cWA+fHqFevpswDTFZnDx+R9lbL6xw==}
@@ -5141,6 +5150,11 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-error-boundary@5.0.0:
+    resolution: {integrity: sha512-tnjAxG+IkpLephNcePNA7v6F/QpWLH8He65+DmedchDwg162JZqx4NmbXj0mlAYVVEd81OW7aFhmbsScYfiAFQ==}
+    peerDependencies:
+      react: '>=16.13.1'
+
   react-error-overlay@6.1.0:
     resolution: {integrity: sha512-SN/U6Ytxf1QGkw/9ve5Y+NxBbZM6Ht95tuXNMKs8EJyFa/Vy/+Co3stop3KBHARfn/giv+Lj1uUnTfOJ3moFEQ==}
 
@@ -5161,12 +5175,12 @@ packages:
   react-is@19.0.0:
     resolution: {integrity: sha512-H91OHcwjZsbq3ClIDHMzBShc1rotbfACdWENsmEf0IFvZ3FgGPtdHMcsv45bQ1hAbgdfiA8SnxTKfDS+x/8m2g==}
 
-  react-leaflet@5.0.0:
-    resolution: {integrity: sha512-CWbTpr5vcHw5bt9i4zSlPEVQdTVcML390TjeDG0cK59z1ylexpqC6M1PJFjV8jD7CF+ACBFsLIDs6DRMoLEofw==}
+  react-leaflet@4.2.1:
+    resolution: {integrity: sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==}
     peerDependencies:
       leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
 
   react-refresh@0.11.0:
     resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}
@@ -8017,7 +8031,7 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@react-leaflet/core@3.0.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@react-leaflet/core@2.1.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       leaflet: 1.9.4
       react: 18.3.1
@@ -8317,6 +8331,10 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/leaflet@1.9.16':
+    dependencies:
+      '@types/geojson': 7946.0.4
 
   '@types/lodash@4.17.15': {}
 
@@ -12393,6 +12411,11 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
+  react-error-boundary@5.0.0(react@18.3.1):
+    dependencies:
+      '@babel/runtime': 7.26.9
+      react: 18.3.1
+
   react-error-overlay@6.1.0: {}
 
   react-icons@5.4.0(react@18.3.1):
@@ -12407,9 +12430,9 @@ snapshots:
 
   react-is@19.0.0: {}
 
-  react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-leaflet@4.2.1(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@react-leaflet/core': 3.0.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-leaflet/core': 2.1.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       leaflet: 1.9.4
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

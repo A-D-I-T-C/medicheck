@@ -1,0 +1,15 @@
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.leaflet-popup-content {
+  margin: 8px;
+  min-width: 200px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
