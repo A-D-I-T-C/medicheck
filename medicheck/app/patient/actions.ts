@@ -1,4 +1,4 @@
-// 'use server';
+'use server';
 
 import { getChatsByUserId, getChatById, getDocumentsByUserId } from '@/lib/db/queries';
 
