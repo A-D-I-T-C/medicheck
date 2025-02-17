@@ -24,9 +24,7 @@ import { generateTitleFromUserMessage } from '../../actions';
 import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
-import { getWeather } from '@/lib/ai/tools/get-weather';
 import { DataAPIClient } from "@datastax/astra-db-ts";
-import { getUser } from '@/lib/db/queries';
 import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
@@ -45,6 +43,14 @@ async function fetchClientDataFromPg(sessionId: string) {
   // const userData = await getDocuments(sessionId);
   // return userData;
   return 0
+}
+
+function getUserRole(session: any): string {
+  if (session.user.role === 'doctor') {
+    return 'doctor';
+  } else {
+    return 'patient';
+  }
 }
 
 // Function to fetch data from Astra DB using RAG
@@ -96,11 +102,18 @@ export async function POST(request: Request) {
     await request.json();
 
   const session = await auth();
-
+  
   if (!session || !session.user || !session.user.id) {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  const userMessage = getMostRecentUserMessage(messages);
+
+  if (!userMessage) {
+    return new Response('No user message found', { status: 400 });
+  }
+
+  // Fetch client data from PostgreSQL using session ID
   let patientData;
   try {
     //TODO add caht id to documents and fetch documents based on chat id
@@ -108,12 +121,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Failed to fetch patient data from Postgres DB:', error);
     return new Response('Failed to fetch data from Postgres DB', { status: 500 });
-  }
-
-  const userMessage = getMostRecentUserMessage(messages);
-
-  if (!userMessage) {
-    return new Response('No user message found', { status: 400 });
   }
 
   // Fetch data from Astra DB using RAG
@@ -158,11 +165,12 @@ export async function POST(request: Request) {
           ...messages,
           {
             role: 'system',
-            content: `You are an AI assistant answering questions about the patient. 
-              Format responses using markdown where applicable.
+            content: `You are an Medical AI assistant that will help gather questions about the patient to make lifes easier for doctors.
+              Be clear to indicate what you are supposed to do and also that you can be wrong about things
+              you are current talking to the ${getUserRole(session)} 
               ${combinedContext} 
               If the answer is not provided in the context, the AI assistant will say,
-               "I'm sorry, I don't know the answer".`
+              "I'm sorry, I don't know the answer".`
           },
         ],
         maxSteps: 5,
@@ -170,7 +178,6 @@ export async function POST(request: Request) {
           selectedChatModel === 'chat-model-reasoning'
             ? []
             : [
-                'getWeather',
                 'createDocument',
                 'updateDocument',
                 'requestSuggestions',
@@ -178,7 +185,6 @@ export async function POST(request: Request) {
         experimental_transform: smoothStream({ chunking: 'word' }),
         experimental_generateMessageId: generateUUID,
         tools: {
-          getWeather,
           createDocument: createDocument({ session, dataStream }),
           updateDocument: updateDocument({ session, dataStream }),
           requestSuggestions: requestSuggestions({
