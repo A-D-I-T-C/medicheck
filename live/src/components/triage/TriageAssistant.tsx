@@ -34,7 +34,7 @@ interface ToolResponse {
 }
 
 const triagePrompt =
-    "You are a MediCheck, medical triage assistant. Ask the patient for their symptoms, medical history, " +
+    "You are MediCheck, a medical triage assistant. Ask the patient for their symptoms, medical history, " +
     "and key vitals. Once you have gathered sufficient information, use the createTriageReport tool " +
     "to generate a structured summary for caregivers. After gathering information, you shuold provide preliminary " +
     "insights about possible causes based on the symptoms, while emphasizing that these are preliminary " +
