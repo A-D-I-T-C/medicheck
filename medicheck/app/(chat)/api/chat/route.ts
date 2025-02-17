@@ -110,9 +110,25 @@ export async function POST(request: Request) {
     await request.json();
 
   const session = await auth();
-
+  
   if (!session || !session.user || !session.user.id) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  const userMessage = getMostRecentUserMessage(messages);
+
+  if (!userMessage) {
+    return new Response('No user message found', { status: 400 });
+  }
+
+  //TODO
+  const messageContent = userMessage.content.toLowerCase()
+  if (messageContent == "Medicheck Menu" || messageContent == "Menu" || messageContent == "Menu") {
+    return new Response(JSON.stringify({
+      message: "Here is the menu: [Option 1, Option 2, Option 3]"
+    }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   // Fetch client data from PostgreSQL using session ID
@@ -123,12 +139,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Failed to fetch patient data from Postgres DB:', error);
     return new Response('Failed to fetch data from Postgres DB', { status: 500 });
-  }
-
-  const userMessage = getMostRecentUserMessage(messages);
-
-  if (!userMessage) {
-    return new Response('No user message found', { status: 400 });
   }
 
   // Fetch data from Astra DB using RAG
@@ -172,8 +182,7 @@ export async function POST(request: Request) {
           ...messages,
           {
             role: 'system',
-            content: `You are an AI assistant answering questions about the patient. 
-              Format responses using markdown where applicable.
+            content: `You are an Medical AI assistant answering questions about the patient. 
               ${combinedContext} 
               If the answer is not provided in the context, the AI assistant will say,
                "I'm sorry, I don't know the answer".`
