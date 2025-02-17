@@ -27,40 +27,22 @@ import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
 import { DataAPIClient } from "@datastax/astra-db-ts";
 import { getUser } from '@/lib/db/queries';
+import OpenAI from "openai";
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
 export const maxDuration = 60;
 
-// let embedder: any;
-// async function setupEmbedder() {
-//   embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-//   console.log('Embedding model is ready!');
+// async function generateEmbeddings(text: string): Promise<number[]> {
+  
+  
+//   return new Array(defaultEmbeddingSize).fill(2);
 // }
-
-// setupEmbedder();
-
-async function generateEmbeddings(text: string): Promise<number[]> {
-  // try {
-  //   if (!embedder) {
-  //     throw new Error('Embedding model is not loaded yet.');
-  //   }
-  //   const output = await embedder(text, { pooling: 'mean', normalize: true });
-  //   return Array.from(output.data);
-  // } catch (error) {
-  //   console.error('Failed to generate embeddings:', error);
-  //   return [];
-  // }
-  // Placeholder: Return a default embedding vector of 768 dimensions filled with zeros.
-  const defaultEmbeddingSize = 1536;
-  return new Array(defaultEmbeddingSize).fill(2);
-}
 
 
 //TODO
 // Function to fetch client data from PostgreSQL using session ID
-//Add check for if it's the client or doctor sending the message
-//Add fetch for client data using the id
 async function fetchClientDataFromPg(sessionId: string) {
-  // const userData = await getSession(sessionId);
+  // const userData = await getDocuments(sessionId);
   // return userData;
   return 0
 }
@@ -77,15 +59,20 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
 
     const client = new DataAPIClient(process.env.ASTRA_DB_APPLICATION_TOKEN);
     const astraDb = client.db(process.env.ASTRA_DB_API_ENDPOINT);
-    const collection = await astraDb.collection('test2');
+    const collection = await astraDb.collection('RagMedDocs1');
 
     // Combine the prompt and user data into a single string
     const combinedInput = `${JSON.stringify(userData)}\n${prompt}`;
-    const embeddings = await generateEmbeddings(combinedInput);
+    const embedding = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: combinedInput,
+      encoding_format: "float"
+    })
+    //const embeddings = await generateEmbeddings(combinedInput);
 
     const cursor = collection.find({}, {
       sort: {
-        $vector: embeddings, 
+        $vector: embedding.data[0].embedding, 
       },
       limit: 5, 
     });
@@ -93,7 +80,6 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
     // Fetch the documents from Astra DB
     const result = await cursor.toArray();
 
-    console.log('Data fetched from Astra DB:', result);
     return result;
   } catch (error) {
     console.error('Error fetching data from Astra DB:', error);
@@ -115,10 +101,9 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // Fetch client data from PostgreSQL using session ID
   let patientData;
   try {
-    //TODO add session id to the table
+    //TODO add caht id to documents and fetch documents based on chat id
     patientData = await fetchClientDataFromPg(session.user.id);
   } catch (error) {
     console.error('Failed to fetch patient data from Postgres DB:', error);
@@ -152,6 +137,7 @@ export async function POST(request: Request) {
     ${combinedContext}
   `;
 
+  console.log(combinedContext);
   const chat = await getChatById({ id });
 
   if (!chat) {

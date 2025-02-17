@@ -90,6 +90,7 @@ const authFormSchemaReg = z.object({
   password: z.string().min(6),
   role: z.enum(['doctor', 'patient']), // Add role to schema
   name: z.string().min(1),
+
 });
 
 

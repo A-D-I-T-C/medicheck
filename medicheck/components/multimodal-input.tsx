@@ -258,7 +258,7 @@ function PureMultimodalInput({
       <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-1">
         <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
         <VoiceInput
-          onTranscript={(text) => setInput((prev) => prev + ' ' + text)}
+          onTranscript={(text) => setInput(input + ' ' + text)}
           disabled={isLoading}
         />
       </div>
