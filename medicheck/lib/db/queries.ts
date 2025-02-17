@@ -250,7 +250,6 @@ export async function getDocumentsById({ id }: { id: string }) {
   }
 }
 
-<<<<<<< HEAD
 export async function getDocumentsByUserId({ id }: { id: string }) {
   try {
     const documents = await db
@@ -267,9 +266,6 @@ export async function getDocumentsByUserId({ id }: { id: string }) {
 }
 
 export async function getDocumentById({ id }: { id: string }) {
-=======
-export async function getDocumentsByUserId(userid: string){
->>>>>>> origin/main
   try {
     const selectedDocuments = await db
       .select()
