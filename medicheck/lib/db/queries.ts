@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt, gte, inArray } from 'drizzle-orm';
@@ -31,6 +31,17 @@ export async function getPatients() {
     return await db.select().from(user).where(eq(user.role, 'patient'));
   } catch (error) {
     console.error('Failed to get patients from database', error);
+    throw error;
+  }
+}
+
+//select*from user
+export async function getUsers() {
+  try {
+    return await db.select().from(user);
+    
+  } catch (error) {
+    console.error('Failed to get users from database', error);
     throw error;
   }
 }

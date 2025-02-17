@@ -18,7 +18,7 @@ export const user = pgTable('User', {
   role: varchar('role', { enum: ['doctor', 'patient'] })
     .notNull()
     .default('patient'),
-  name: varchar('name', { length: 64 }).notNull(), // Add name field
+  name: varchar('name', { length: 64 }).default('test'),
 });
 
 export type User = InferSelectModel<typeof user>;
