@@ -30,26 +30,30 @@ import { getUser } from '@/lib/db/queries';
 
 export const maxDuration = 60;
 
-// let embedder: any;
-// async function setupEmbedder() {
-//   embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-//   console.log('Embedding model is ready!');
-// }
-
-// setupEmbedder();
-
 async function generateEmbeddings(text: string): Promise<number[]> {
-  // try {
-  //   if (!embedder) {
-  //     throw new Error('Embedding model is not loaded yet.');
+  // const loadSampleData = async () => {
+  //   const collection = await db.collection(collectionName)
+  //   for await ( const url of medData) {
+  //     const content = await scrapePage(url)
+  //     const chunks = await splitter.splitText(content)
+  //     for await ( const chunk of chunks) {
+  //       const embedding = await openai.embeddings.create({
+  //         model: "text-embedding-3-small",
+  //         input: chunk,
+  //         encoding_format: "float"
+  //       })
+
+  //       const vector = embedding.data[0].embedding
+
+  //       const res = await collection.insertOne({
+  //         $vector: vector,
+  //         text: chunk
+  //       })
+
+  //     }
   //   }
-  //   const output = await embedder(text, { pooling: 'mean', normalize: true });
-  //   return Array.from(output.data);
-  // } catch (error) {
-  //   console.error('Failed to generate embeddings:', error);
-  //   return [];
   // }
-  // Placeholder: Return a default embedding vector of 768 dimensions filled with zeros.
+  // Placeholder: Return a default embedding vector of 1536 dimensions filled with twos.
   const defaultEmbeddingSize = 1536;
   return new Array(defaultEmbeddingSize).fill(2);
 }
@@ -57,10 +61,8 @@ async function generateEmbeddings(text: string): Promise<number[]> {
 
 //TODO
 // Function to fetch client data from PostgreSQL using session ID
-//Add check for if it's the client or doctor sending the message
-//Add fetch for client data using the id
 async function fetchClientDataFromPg(sessionId: string) {
-  // const userData = await getSession(sessionId);
+  // const userData = await getDocuments(sessionId);
   // return userData;
   return 0
 }
@@ -93,7 +95,6 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
     // Fetch the documents from Astra DB
     const result = await cursor.toArray();
 
-    //console.log('Data fetched from Astra DB:', result);
     return result;
   } catch (error) {
     console.error('Error fetching data from Astra DB:', error);
@@ -115,10 +116,9 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // Fetch client data from PostgreSQL using session ID
   let patientData;
   try {
-    //TODO add session id to the table
+    //TODO add caht id to documents and fetch documents based on chat id
     patientData = await fetchClientDataFromPg(session.user.id);
   } catch (error) {
     console.error('Failed to fetch patient data from Postgres DB:', error);
