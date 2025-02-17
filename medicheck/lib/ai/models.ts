@@ -7,7 +7,7 @@ import {
   wrapLanguageModel,
 } from 'ai';
 
-export const DEFAULT_CHAT_MODEL: string = 'chat-model-small';
+export const DEFAULT_CHAT_MODEL: string = 'chat-model-cerebras';
 
 export const myProvider = customProvider({
   languageModels: {
@@ -35,23 +35,24 @@ interface ChatModel {
 
 export const chatModels: Array<ChatModel> = [
   {
-    id: 'chat-model-small',
-    name: 'Small model',
-    description: 'Small model for fast, lightweight tasks',
-  },
-  {
-    id: 'chat-model-large',
-    name: 'Large model',
-    description: 'Large model for complex, multi-step tasks',
-  },
-  {
-    id: 'chat-model-reasoning',
-    name: 'Reasoning model',
-    description: 'Uses advanced reasoning',
-  },
-  {
     id: 'chat-model-cerebras',
     name: 'Cerebras-R1-Distill',
     description: 'LLama 70B distilled from R1',
   },
+  {
+    id: 'chat-model-small',
+    name: 'Local Small model',
+    description: 'Small model for fast, lightweight tasks',
+  },
+  {
+    id: 'chat-model-large',
+    name: 'Local Large model',
+    description: 'Large model for complex, multi-step tasks',
+  },
+  {
+    id: 'chat-model-reasoning',
+    name: 'Local Reasoning model',
+    description: 'Uses advanced reasoning',
+  },
+  
 ];
