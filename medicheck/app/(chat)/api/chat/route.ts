@@ -27,36 +27,16 @@ import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
 import { DataAPIClient } from "@datastax/astra-db-ts";
 import { getUser } from '@/lib/db/queries';
+import OpenAI from "openai";
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
 export const maxDuration = 60;
 
-async function generateEmbeddings(text: string): Promise<number[]> {
-  // const loadSampleData = async () => {
-  //   const collection = await db.collection(collectionName)
-  //   for await ( const url of medData) {
-  //     const content = await scrapePage(url)
-  //     const chunks = await splitter.splitText(content)
-  //     for await ( const chunk of chunks) {
-  //       const embedding = await openai.embeddings.create({
-  //         model: "text-embedding-3-small",
-  //         input: chunk,
-  //         encoding_format: "float"
-  //       })
-
-  //       const vector = embedding.data[0].embedding
-
-  //       const res = await collection.insertOne({
-  //         $vector: vector,
-  //         text: chunk
-  //       })
-
-  //     }
-  //   }
-  // }
-  // Placeholder: Return a default embedding vector of 1536 dimensions filled with twos.
-  const defaultEmbeddingSize = 1536;
-  return new Array(defaultEmbeddingSize).fill(2);
-}
+// async function generateEmbeddings(text: string): Promise<number[]> {
+  
+  
+//   return new Array(defaultEmbeddingSize).fill(2);
+// }
 
 
 //TODO
@@ -83,11 +63,16 @@ async function fetchDataFromAstraDBWithRAG(prompt: string, userData: any) {
 
     // Combine the prompt and user data into a single string
     const combinedInput = `${JSON.stringify(userData)}\n${prompt}`;
-    const embeddings = await generateEmbeddings(combinedInput);
+    const embedding = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: combinedInput,
+      encoding_format: "float"
+    })
+    //const embeddings = await generateEmbeddings(combinedInput);
 
     const cursor = collection.find({}, {
       sort: {
-        $vector: embeddings, 
+        $vector: embedding.data[0].embedding, 
       },
       limit: 5, 
     });
