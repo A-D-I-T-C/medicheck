@@ -24,6 +24,15 @@ import {
 import { getEmergencyWaitRoomInfo, executeGetEmergencyWaitRoomInfo, type EmergencyWaitRoomResponse } from "../../tools/get-emergency-waitroom-info";
 import { EmergencyWaitRoomMap } from './EmergencyWaitRoomMap';
 
+interface ToolResponse {
+  response: {
+    output: any;
+    success?: boolean;
+    message?: string;
+  };
+  id: string;
+}
+
 const triagePrompt =
     "You are a medical triage assistant. Ask the patient for their symptoms, medical history, " +
     "and key vitals. Once you have gathered sufficient information, use the createTriageReport tool " +
@@ -67,31 +76,39 @@ function TriageAssistantComponent() {
     const onToolCall = async (toolCall: ToolCall) => {
       console.log("Received tool call in TriageAssistant:", toolCall);
       
+      const responses: ToolResponse[] = [];
+      
       for (const fc of toolCall.functionCalls) {
         if (fc.name === "createTriageReport") {
           const args = fc.args as TriageReportData;
-          await executeCreateTriageReport(args, (newReport) => setReport(newReport));
+          const result = await executeCreateTriageReport(args, (newReport) => setReport(newReport));
+          responses.push({
+            response: { output: result },
+            id: fc.id,
+          });
         }
         else if (fc.name === "getEmergencyWaitRoomInfo") {
           const args = fc.args as { userCity: string; urgencyLevel: string; maxDistance?: number };
-          await executeGetEmergencyWaitRoomInfo(args, (info) => setWaitRoomInfo(info));
+          const result = await executeGetEmergencyWaitRoomInfo(args, (info) => setWaitRoomInfo(info));
+          responses.push({
+            response: { 
+              output: result.output,
+              success: result.success,
+              message: result.message
+            },
+            id: fc.id,
+          });
         }
       }
-
-      if (toolCall.functionCalls.length) {
+  
+      if (responses.length) {
         setTimeout(
-          () =>
-            client.sendToolResponse({
-              functionResponses: toolCall.functionCalls.map((fc) => ({
-                response: { output: { success: true } },
-                id: fc.id,
-              })),
-            }),
+          () => client.sendToolResponse({ functionResponses: responses }),
           200,
         );
       }
     };
-
+  
     if (client) {
       client.on("toolcall", onToolCall);
       return () => {

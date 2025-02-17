@@ -70,13 +70,13 @@ export const executeGetEmergencyWaitRoomInfo = async (
     );
     const data = await response.json();
     
-    let facilities = data[args.userCity]?.Emergency?.map((facility: any) => {
+    let facilities = data["Edmonton"]?.Emergency?.map((facility: any) => {
       const coordinates = extractCoordinates(facility.GoogleMapsLinkDirection);
       const distance = haversineDistance(
-        userLocation.lat,
-        userLocation.lng,
-        coordinates.lat,
-        coordinates.lng
+      userLocation.lat,
+      userLocation.lng,
+      coordinates.lat,
+      coordinates.lng
       );
 
       return {
@@ -98,18 +98,61 @@ export const executeGetEmergencyWaitRoomInfo = async (
 
     // Sort by wait time and distance
     facilities.sort((a: WaitRoomFacility, b: WaitRoomFacility) => {
-      // Prioritize shorter wait times
       const waitDiff = a.waitTimeMinutes - b.waitTimeMinutes;
-      if (Math.abs(waitDiff) > 30) return waitDiff; // If wait time difference is significant
-      
-      // Otherwise consider distance
+      if (Math.abs(waitDiff) > 30) return waitDiff;
       return a.distance - b.distance;
     });
 
-    onWaitRoomInfo({ facilities, userLocation });
-    return { success: true, message: "Emergency wait room information retrieved" };
+    // Send full dataset to UI
+    const result = { facilities, userLocation };
+    onWaitRoomInfo(result);
+
+    // Get top facilities based on combined score
+    const getTopFacilities = (facilities: WaitRoomFacility[], count: number = 3) => {
+      const scoredFacilities = facilities.map(f => ({
+        ...f,
+        score: (f.waitTimeMinutes * 0.7) + (f.distance * 0.3)
+      }));
+
+      return scoredFacilities
+        .sort((a, b) => a.score - b.score)
+        .slice(0, count)
+        .map(({ score, ...facility }) => facility);
+    };
+
+    const topFacilities = getTopFacilities(facilities);
+    // Create optimized summary for LLM
+    const summary = {
+      totalFacilities: facilities.length,
+      recommendedFacilities: topFacilities.map((f: WaitRoomFacility) => ({
+        name: f.name,
+        waitTime: f.waitTime,
+        distance: `${f.distance.toFixed(5)}km`,
+        note: f.note
+      }))
+    };
+
+    return { 
+      success: true,
+      output: {
+        summary,
+        cityInfo: {
+          city: args.userCity,
+          urgencyLevel: args.urgencyLevel,
+          userLocation
+        },
+        facilities: topFacilities // Only send top 3 to LLM
+      },
+      message: `Found ${facilities.length} facilities in ${args.userCity}. ` +
+        `Best option is ${topFacilities[0]?.name} (${topFacilities[0]?.waitTime} wait) ` +
+        `at ${topFacilities[0]?.distance.toFixed(1)}km away.`
+    };
   } catch (error) {
     console.error("Error fetching emergency wait room info:", error);
-    return { success: false, message: "Failed to retrieve wait room information" };
+    return { 
+      success: false, 
+      message: "Failed to retrieve wait room information",
+      output: null
+    };
   }
 };
