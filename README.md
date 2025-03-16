@@ -4,6 +4,8 @@ Navigating healthcare shouldn’t feel like a maze. Patients and clinicians both
 
 MediCheck is an AI-powered platform designed to streamline healthcare interactions by providing seamless access to session data, forms, and patient–clinician communication. It integrates Whisper for voice-to-voice interaction and our chatbot, powered by DeepSeek and Llama 3.2, runs on self-hosted servers, ensuring fast and secure responses for sensitive medical data. With a RAG pipeline, AstraDB for vector search, and a multi-model AI orchestration system, MediCheck synchronizes chatbot conversations, forms, and documents in real-time. The platform is built using TypeScript, Next.js, React, Tailwind, and Python, with AI models deployed on Google Cloud and self-hosted infrastructure.
 
+![mediCheck](https://github.com/user-attachments/assets/7b623b0c-d2fe-4dee-b41e-a60424c5c647)
+
 ## 🔧 Tech Stack & Innovations
 ⚡ RAG Pipeline – Our chatbot remembers past sessions, referencing structured and unstructured data for context-aware responses.
 🧠 AstraDB for Vector Search – Efficiently retrieving session history, documents, and chatbot interactions.
