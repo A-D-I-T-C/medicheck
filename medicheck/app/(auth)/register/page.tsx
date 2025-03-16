@@ -15,7 +15,6 @@ export default function Page() {
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState(''); // Add name state
-  const [name, setName] = useState(''); // Add name state
   const [role, setRole] = useState('patient'); // Default to patient
   const [isSuccessful, setIsSuccessful] = useState(false);
 
